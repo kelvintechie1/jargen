@@ -1,6 +1,6 @@
 """Contains all functions needed when generating a route object, its associated network, and any associated path/route attributes"""
 from ipaddress import IPv4Network, IPv4Address
-from random import randint
+from random import randint, choices
 from src.objects import Route
 
 # The tests are defined as such:
@@ -23,16 +23,14 @@ def runTests(address: IPv4Address) -> bool:
             return False
     return True
 
-def generate_network() -> str:
+def generate_network(minPL: int, maxPL: int) -> str:
     """Generate a randomized IPv4/IPv6 network, based on provided constraints in the configuration"""
     while True:
         # Generate random IP address between 1.0.0.0 and 223.255.255.255 (0.0.0.0/8 = reserved, 224.0.0.0/4 = multicast, 240.0.0.0/4 = reserved) and make sure that it passes all defined tests
         address = IPv4Address(randint(16777216, 3758096383))
         if not runTests(address=address):
             continue
-        # Generate random prefix length between 1 and 32 (excludes /0)
-        minPL = 8
-        maxPL = 32
+
         prefixLength = randint(minPL, maxPL)
 
         return f"{str(address)}/{prefixLength}"
@@ -65,8 +63,26 @@ def generate_aspath(mode: str, include_privateAS: bool, maxLength: int) -> list[
     
     return aspath
 
+def generate_communities() -> list[str]:
+    """Generate BGP communities for the route"""
+    pass
+
+def generate_origin(probabilities: list[int]) -> str:
+    """Randomly choose an origin code for the route based on the provided probabilities"""
+    originCodes = ["igp", "egp", "incomplete"]
+
+    return choices(originCodes)[0]
+
 def generateRoutes() -> Route:
     """Construct a route object"""
     network = generate_network()
     aspath = generate_aspath()
-    return Route(network=IPv4Network(network, strict=False), aspath=aspath)
+    communities = generate_communities()
+    origin = generate_origin()
+
+    return Route(
+        network=IPv4Network(network, strict=False),
+        aspath=aspath,
+        communities=communities,
+        origin=origin
+    )
