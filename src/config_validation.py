@@ -11,7 +11,7 @@ from re import fullmatch
 def basic_validation_caller(config: dict | list,
                             schema: dict | list,
                             types: dict | list,
-                            failure: dict[str, str | int | list]):
+                            failure: dict[str, str | int | list]) -> bool:
 
     def basic_validation_dict():
         # Check to see whether there are any invalid keys
