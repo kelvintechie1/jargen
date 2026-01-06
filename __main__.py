@@ -19,11 +19,12 @@ def main(configfile: str) -> None:
         validateConfig(config=config,
                        schema=read_yaml(f"{path.dirname(__file__)}/data/config.schema.yml"),
                        types=read_yaml(f"{path.dirname(__file__)}/data/config.types.yml"))
+        print("Configuration imported and validated successfully")
     except ConfigValidationTestFailedError as e:
         print(e)
         exit(-1)
 
-    counter = 0
+    """counter = 0
     while counter < config["prefixes"]["quantity"]:
         route = generateRoutes()
         if route.network not in existingPrefixes:
@@ -32,7 +33,7 @@ def main(configfile: str) -> None:
             counter += 1
 
     for platform in config["basic"]["platforms"]:
-        platforms[platform](path=path.join(path.dirname(__file__), "output"), routes=routes)
+        platforms[platform](path=path.join(path.dirname(__file__), "output"), routes=routes)"""
 
 if __name__ == "__main__":
     main()
